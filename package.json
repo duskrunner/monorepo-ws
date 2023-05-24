@@ -1,0 +1,9 @@
+{
+  "name": "monorepo-ws",
+  "version": "1.0.0",
+  "description": "Мини воркшоп по монорепозиторию",
+  "main": "index.js",
+  "author": "Stanislav Selin <stasvselin@gmail.com>",
+  "license": "MIT",
+  "private": false
+}
