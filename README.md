@@ -1,6 +1,6 @@
 # Заметки
 
-## 1. `./package.json`
+### 1. `./package.json`
 
 Добавить:
 
@@ -10,15 +10,74 @@
 ]
 ```
 
-## 2. Копируем папку `types` из `files` в ` packages`
+### 2. Копируем папку `types` из `files` в ` packages`
 
-## 3. `monorepo-ws> yarn`
+### 3. `monorepo-ws> yarn`
 
-## 4. Билдим `types`
+### 4. Билдим `types`
 
 ```bash
 monorepo-ws> cd packages/types
 monorepo-ws/packages/types> yarn build
+```
+
+### 5. Копируем папку `utility` из `files` в packages
+
+### 6. Выносим общие части `tsconfig.json` в общий корневой файл: создаем `packages/tsconfig.settings.json` и копируем содержимое `packages/types/tsconfig.json` в него, кроме `"include": ["src"]`
+
+```json
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "types": [],
+    "sourceMap": true,
+    "target": "ES2018",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "src"
+  }
+}
+```
+
+### 7. Теперь идем в локальные конфиги и меняем их на:
+
+```json
+{
+  "extends": "../tsconfig.settings.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src"]
+}
+```
+
+### 8. Проверяем что билд не сломался `monorepo-ws/packages/types> yarn build`
+
+### tsconfig.tsbuildinfo
+
+Этот файл следит за всеми зависимостями, и перебилживает только части которые были изменены. Хэши **signature** и **version** используется для определения изменений. По сути этот файл помогает определить, соответствует ли текущий билд текущим исходникам. Таким образом ускоряется последующая сборка.
+
+### 9. Создаем новый `packages/tsconfig.json`. нужен чтобы можно было `monorepo-ws/packages> tsc -b .` и собрать все пакеты.
+
+```json
+{
+  "files": [],
+  "references": [{ "path": "utility" }, { "path": "types" }]
+}
+```
+
+`monorepo-ws/packages> tsc -b .`
+
+Удалить все что было сбилжено (на случай если накосячил с конфигом и js файлы были созданы рядом с ts):
+
+```bash
+tsc -b . --clean
 ```
 
 # Глобальный TS кофиг
