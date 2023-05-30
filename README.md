@@ -1,8 +1,8 @@
 # Заметки
 
-### 1. `./package.json`
+## 1. Добавляем первый пакет
 
-Добавить:
+Добавить `./package.json`:
 
 ```json
 "workspaces": [
@@ -10,24 +10,26 @@
 ]
 ```
 
-### 2. Копируем папку `types` из `files` в ` packages`
+Копируем папку `types` из `files` в ` packages`
 
-### 3.
+Ставим пакеты:
 
 ```bash
 monorepo-ws> yarn
 ```
 
-### 4. Билдим `types`
+Билдим `types`:
 
 ```bash
 monorepo-ws> cd packages/types
 monorepo-ws/packages/types> yarn build
 ```
 
-### 5. Копируем папку `utility` из `files` в packages
+## 2. Добавляем второй пакет
 
-### 6. Выносим общие части `tsconfig.json` в общий корневой файл: создаем `packages/tsconfig.settings.json` и копируем содержимое `packages/types/tsconfig.json` в него, кроме `"include": ["src"]`
+Копируем папку `utility` из `files` в packages
+
+Выносим общие части `tsconfig.json` в общий корневой файл: создаем `packages/tsconfig.settings.json` и копируем содержимое `packages/types/tsconfig.json` в него, кроме `"include": ["src"]`
 
 ```json
 {
@@ -47,7 +49,7 @@ monorepo-ws/packages/types> yarn build
 }
 ```
 
-### 7. Теперь идем в локальные конфиги и меняем их на:
+Теперь идем в локальные конфиги и меняем их на:
 
 ```json
 {
@@ -61,17 +63,15 @@ monorepo-ws/packages/types> yarn build
 }
 ```
 
-### 8. Проверяем что билд не сломался
+Проверяем что билд не сломался
 
 ```bash
 monorepo-ws/packages/types> yarn build
 ```
 
-### tsconfig.tsbuildinfo
+`tsconfig.tsbuildinfo` - Этот файл следит за всеми зависимостями, и перебилживает только части которые были изменены. Хэши **signature** и **version** используется для определения изменений. По сути этот файл помогает определить, соответствует ли текущий билд текущим исходникам. Таким образом ускоряется последующая сборка.
 
-Этот файл следит за всеми зависимостями, и перебилживает только части которые были изменены. Хэши **signature** и **version** используется для определения изменений. По сути этот файл помогает определить, соответствует ли текущий билд текущим исходникам. Таким образом ускоряется последующая сборка.
-
-### 9. Создаем новый `packages/tsconfig.json`. нужен чтобы можно было
+Создаем новый `packages/tsconfig.json`. нужен чтобы можно было
 
 ```bash
 monorepo-ws/packages> tsc -b .
@@ -96,7 +96,7 @@ monorepo-ws/packages> tsc -b .
 tsc -b . --clean
 ```
 
-### 10. Rimraf
+## 3. Rimraf
 
 Rimraf по сути не зависяций от система rm -rf. Используется чтобы снести все артифакты билда.
 Ставим как зависимоть в корень нашего проекта:
@@ -122,7 +122,7 @@ monorepo-ws/packages/types> yarn clean
 
 Заметно, что мы повторяем один и тот же патерн в каждом пакете, но мы это скоро пофиксим.
 
-### 11. Тестирование
+## 4. Тестирование
 
 Будем использовать jest, но для того, чтобы jest понимал ts, на нужен babel
 
@@ -158,7 +158,7 @@ monorepo-ws/packages/types> yarn jest
 "test": "jest",
 ```
 
-### 12. Линтинг
+## 5. Линтинг
 
 Копируем files/.eslintrc в корень. В корень потому-что большинство IDE ожидают, что он будет там. В частности VS Code работает так, если хотим использовать конфиг из определенной папки то в настройках нужно прописать eslint.workingDirectories: []
 
@@ -189,7 +189,7 @@ monorepo-ws> yarn add -WD eslint @typescript-eslint/eslint-plugin @typescript-es
 monorepo-ws/packages/utility> yarn lint
 ```
 
-### 13. Lerna
+## 6. Lerna
 
 Одно из приимуществ Lerna, она позволяет запускать команды в каждом пакете (как forloop)
 
