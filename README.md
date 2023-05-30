@@ -102,7 +102,19 @@ Rimraf по сути не зависяций от система rm -rf. Исп�
 Ставим как зависимоть в корень нашего проекта:
 
 ```bash linenums="monorepo-ws>"
-monorepo-ws> yarn add -WD rimraf
+yarn add -WD rimraf
+```
+
+```console linenums="monorepo-ws>"
+yarn add -WD rimraf
+```
+
+```Shell linenums="monorepo-ws>"
+yarn add -WD rimraf
+```
+
+```py linenums="monorepo-ws>"
+yarn add -WD rimraf
 ```
 
 Идем в каждый пакет в файл package.json добавляем новый скрипт:
