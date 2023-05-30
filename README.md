@@ -101,20 +101,8 @@ tsc -b . --clean
 Rimraf по сути не зависяций от система rm -rf. Используется чтобы снести все артифакты билда.
 Ставим как зависимоть в корень нашего проекта:
 
-```bash linenums="monorepo-ws>"
-yarn add -WD rimraf
-```
-
-```console linenums="monorepo-ws>"
-yarn add -WD rimraf
-```
-
-```Shell linenums="monorepo-ws>"
-yarn add -WD rimraf
-```
-
-```py linenums="monorepo-ws>"
-yarn add -WD rimraf
+```bash
+monorepo-ws> yarn add -WD rimraf
 ```
 
 Идем в каждый пакет в файл package.json добавляем новый скрипт:
