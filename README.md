@@ -101,7 +101,7 @@ tsc -b . --clean
 Rimraf по сути не зависяций от система rm -rf. Используется чтобы снести все артифакты билда.
 Ставим как зависимоть в корень нашего проекта:
 
-```console
+```bash linenums="monorepo-ws>"
 monorepo-ws> yarn add -WD rimraf
 ```
 
