@@ -6,6 +6,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "scripts": {
+    "build": "tsc -b ."
+  },
   "dependencies": {
     "uuid": "^9.0.0"
   }
