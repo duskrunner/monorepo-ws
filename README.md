@@ -14,15 +14,19 @@
 
 Ставим пакеты:
 
+monorepo-ws>
+
 ```bash
-monorepo-ws> yarn
+ yarn
 ```
 
 Билдим `types`:
 
+monorepo-ws>
+
 ```bash
-monorepo-ws> cd packages/types
-monorepo-ws/packages/types> yarn build
+ cd packages/types
+ yarn build
 ```
 
 ## 2. Добавляем второй пакет
@@ -65,16 +69,20 @@ monorepo-ws/packages/types> yarn build
 
 Проверяем что билд не сломался
 
+monorepo-ws/packages/types>
+
 ```bash
-monorepo-ws/packages/types> yarn build
+ yarn build
 ```
 
 `tsconfig.tsbuildinfo` - Этот файл следит за всеми зависимостями, и перебилживает только части которые были изменены. Хэши **signature** и **version** используется для определения изменений. По сути этот файл помогает определить, соответствует ли текущий билд текущим исходникам. Таким образом ускоряется последующая сборка.
 
 Создаем новый `packages/tsconfig.json`. нужен чтобы можно было
 
+monorepo-ws/packages>
+
 ```bash
-monorepo-ws/packages> tsc -b .
+ tsc -b .
 ```
 
 и собрать все пакеты.
@@ -86,8 +94,10 @@ monorepo-ws/packages> tsc -b .
 }
 ```
 
+monorepo-ws/packages>
+
 ```bash
-monorepo-ws/packages> tsc -b .
+ tsc -b .
 ```
 
 Удалить все что было сбилжено (на случай если накосячил с конфигом и js файлы были созданы рядом с ts):
@@ -101,8 +111,10 @@ tsc -b . --clean
 Rimraf по сути не зависяций от система rm -rf. Используется чтобы снести все артифакты билда.
 Ставим как зависимоть в корень нашего проекта:
 
+monorepo-ws>
+
 ```bash
-monorepo-ws> yarn add -WD rimraf
+ yarn add -WD rimraf
 ```
 
 Идем в каждый пакет в файл package.json добавляем новый скрипт:
@@ -113,11 +125,13 @@ monorepo-ws> yarn add -WD rimraf
 
 Затем проверяем очистку:
 
+monorepo-ws>
+
 ```bash
-monorepo-ws> cd packages/types
-monorepo-ws/packages/types> yarn clean
-monorepo-ws/packages/types> yarn build
-monorepo-ws/packages/types> yarn clean
+ cd packages/types
+ yarn clean
+ yarn build
+ yarn clean
 ```
 
 Заметно, что мы повторяем один и тот же патерн в каждом пакете, но мы это скоро пофиксим.
@@ -126,9 +140,11 @@ monorepo-ws/packages/types> yarn clean
 
 Будем использовать jest, но для того, чтобы jest понимал ts, на нужен babel
 
+monorepo-ws/packages/types>
+monorepo-ws/packages/utility>
+
 ```bash
-monorepo-ws/packages/types> yarn add -D @babel/preset-env @babel/preset-typescript
-monorepo-ws/packages/utility> yarn add -D @babel/preset-env @babel/preset-typescript
+ yarn add -D @babel/preset-env @babel/preset-typescript
 ```
 
 Создаем в ./packages `.babelrc`:
@@ -147,9 +163,11 @@ monorepo-ws/packages/utility> yarn add -D @babel/preset-env @babel/preset-typesc
 }
 ```
 
+monorepo-ws/packages/utility>
+monorepo-ws/packages/types>
+
 ```bash
-monorepo-ws/packages/utility> yarn jest
-monorepo-ws/packages/types> yarn jest
+ yarn jest
 ```
 
 В обоих package.json добавляем скрипт для тестов:
@@ -162,8 +180,10 @@ monorepo-ws/packages/types> yarn jest
 
 Копируем files/.eslintrc в корень. В корень потому-что большинство IDE ожидают, что он будет там. В частности VS Code работает так, если хотим использовать конфиг из определенной папки то в настройках нужно прописать eslint.workingDirectories: []
 
+monorepo-ws>
+
 ```bash
-monorepo-ws> yarn add -WD eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser
+ yarn add -WD eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser
 ```
 
 Создаем `.eslintrc` в каждом пакете с содержимым:
@@ -185,8 +205,10 @@ monorepo-ws> yarn add -WD eslint @typescript-eslint/eslint-plugin @typescript-es
 
 Проверяем, что всё работает:
 
+monorepo-ws/packages/utility>
+
 ```bash
-monorepo-ws/packages/utility> yarn lint
+ yarn lint
 ```
 
 ## 6. Lerna
@@ -195,8 +217,10 @@ monorepo-ws/packages/utility> yarn lint
 
 Ставим:
 
+monorepo-ws>
+
 ```bash
-monorepo-ws> yarn add -DW lerna
+ yarn add -DW lerna
 ```
 
 Копируем ./files/lerna.json в корень
@@ -205,8 +229,10 @@ monorepo-ws> yarn add -DW lerna
 "version": "0.0.1" //Можно выставить в independent, чтобы версии пакетов были независимы
 ```
 
+monorepo-ws>
+
 ```bash
-monorepo-ws> yarn lerna --help
+ yarn lerna --help
 ```
 
 `lerna link` - если наши пакеты имеют зависимости друг с другом, то lerna создаст symblink в node_modules для них.
@@ -223,32 +249,42 @@ monorepo-ws> yarn lerna --help
   "@mono/types": "^0.0.1"
 ```
 
+monorepo-ws>
+
 ```bash
-monorepo-ws> yarn lerna link
+ yarn lerna link
 ```
 
 Идем в ulitity/node_modules и видим что была создана symlink на @mono/types
 
-```bash
-monorepo-ws> yarn lerna run clean
-```
+monorepo-ws>
 
 ```bash
-monorepo-ws> yarn lerna build
+ yarn lerna run clean
+```
+
+monorepo-ws>
+
+```bash
+yarn lerna build
 ```
 
 Теперь из-за того что у нас utility зависит от types, сначала будет собран, types, а затем уже utility
 
 Удаляем зависимость "@mono/types": "^0.0.1" и запускам:
 
+monorepo-ws>
+
 ```bash
-monorepo-ws> yarn lerna bootstrap
+ yarn lerna bootstrap
 ```
 
 Симлинк должен пропасть
 
+monorepo-ws>
+
 ```bash
-monorepo-ws> yarn lerna build
+ yarn lerna build
 ```
 
 Порядок выполнения может стать другим
@@ -256,6 +292,72 @@ monorepo-ws> yarn lerna build
 `<command> --concurrency <number>` - запускает команды в несколько потоков, если они не имеют зависимостей между собой.
 
 `<command> --stream` - выводит весь output в консоль.
+
+## 7. Версионирование
+
+https://www.conventionalcommits.org/en/v1.0.0/
+
+Копируем в корень ./files/commitlint.config.js
+
+Ставим необходимые пакеты:
+
+monorepo-ws>
+
+```bash
+yarn add -WD @commitlint/cli @commitlint/config-conventional @commitlint/config-lerna-scopes commitlint husky lerna-changelog
+```
+
+Настраиваем husky:
+monorepo-ws>
+
+```bash
+yarn husky install
+yarn husky add .husky/commit-msg "commitlint -e"
+```
+
+Проверяем коммитлинт:
+
+```bash
+echo "lol(graph): mega graph changes" | yarn commitlint
+```
+
+Посмотрим еще на пару команд Lerna:
+list, version, changed
+
+```bash
+yarn lerna --help
+```
+
+```bash
+yarn version
+```
+
+```bash
+yarn version --conventional-commits
+```
+
+В каждом пакете появится CHANGELOG.md
+
+## 8. Внутренние зависимости
+
+Копируем ./files/algo в packages
+Видим, что он зависит как от types так и от utility, но в package.json этого нет. Это не есть хорошо если кто-то будет использовать только algo.
+
+```bash
+yarn lerna bootstrap
+```
+
+```bash
+yarn lerna add @mono/types @mono/utility --scope @mono/algo
+```
+
+```bash
+yarn lerna link
+```
+
+```bash
+yarn lerna run build
+```
 
 ## Husky and versioning
 
