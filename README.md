@@ -359,16 +359,4 @@ yarn lerna link
 yarn lerna run build
 ```
 
-## Husky and versioning
-
-`yarn husky install`
-
-`yarn husky add .husky/<hook-name> "<command-to-run>"`
-
-`yarn commitlint -e`
-
-`yarn lerna version --conventional-commits`
-
-## Inner dep
-
-`lerna add @shlack/types --scope '@shlack/{ui,data}'`
+# _Вот и всё ребята_
